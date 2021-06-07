@@ -1,0 +1,23 @@
+
+qiime_2020.8.sif biom add-metadata -i feature-table.biom -o otu_table.biom --observation-metadata-fp taxonomy.tsv --observation-header OTUID,taxonomy --sc-separated taxonomy
+2:30
+qiime_2020.8.sif qiime tools export --input-path table.qza --output-path taxonomy-export/
+2:30
+qiime_2020.8.sif qiime tools export --input-path taxonomy.qza --output-path taxonomy-export/
+2:31
+qiime_2020.8.sif biom add-metadata -i feature-table.biom -o otu_table.biom --observation-metadata-fp taxonomy.tsv --observation-header OTUID,taxonomy --sc-separated taxonomy
+
+qiime_2020.8.sif biom convert -i otu_table.biom -o otu_table.txt --to-tsv --header-key taxonomy --to-tsv --output-metadata-id "Consensus Lineage"
+
+
+
+library(phyloseq)
+biomTable="otu_table.txt"
+mapFile="metadata.tsv"
+qiimedata = import_qiime(biomTable, mapFile)
+rarefied_data=rarefy_even_depth(qiimedata)
+
+
+plot_alpha_diversity <- plot_richness(rarefied_data, x="condition", measures=c("Observed", "Chao1", "ACE", "Shannon", "Simpson"), color = "condition", shape= NULL, title = NULL, scales = "free_y", nrow = 1, shsi = NULL) + geom_boxplot() + scale_color_manual(values=c("red","blue","purple")) + theme(panel.background = element_blank(),axis.text = element_text(color = "black"),panel.border = element_rect(colour = "black", fill=NA, size=0.01),axis.ticks = element_line(color = "black")) 
+
+ggsave(file = paste0("alpha_diversity.svg"), plot_alpha_diversity, width = 18, dpi = 300, units = "cm", device='svg')
