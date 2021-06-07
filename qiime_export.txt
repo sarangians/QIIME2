@@ -21,3 +21,87 @@ rarefied_data=rarefy_even_depth(qiimedata)
 plot_alpha_diversity <- plot_richness(rarefied_data, x="condition", measures=c("Observed", "Chao1", "ACE", "Shannon", "Simpson"), color = "condition", shape= NULL, title = NULL, scales = "free_y", nrow = 1, shsi = NULL) + geom_boxplot() + scale_color_manual(values=c("red","blue","purple")) + theme(panel.background = element_blank(),axis.text = element_text(color = "black"),panel.border = element_rect(colour = "black", fill=NA, size=0.01),axis.ticks = element_line(color = "black")) 
 
 ggsave(file = paste0("alpha_diversity.svg"), plot_alpha_diversity, width = 18, dpi = 300, units = "cm", device='svg')
+
+
+AMPVIS
+
+biom_otutable <- amp_import_biom("otu_table.biom")
+metadata="metadata.tsv"
+d <- amp_load(otutable = otutable,metadata = metadata)
+
+plot_heatmap_genus <- amp_heatmap(d,
+            group_by = "condition",
+            tax_aggregate = "Species",
+            tax_add = "Genus",
+            tax_show = 50,
+            min_abundance = 0.1,
+            tax_empty = "remove",
+	          round=3,
+	          normalise = FALSE,
+            plot_values = FALSE) +
+            theme(axis.text.x = element_text(angle = 0, size=8, vjust = 1),
+            axis.text.y = element_text(size=8),
+            legend.position="right")
+
+ggsave(file = paste0("ampvis2_species_heatmap.svg"), plot_heatmap_genus, width = 25, dpi = 300, units = "cm", device='svg')
+
+
+plot_heatmap_species <- amp_heatmap(d,
+            group_by = "condition",
+            tax_aggregate = "Genus",
+            tax_add = "Phylum",
+            tax_show = 50,
+            min_abundance = 0.1,
+            tax_empty = "remove",
+	          round=3,
+	          normalise = FALSE,
+            plot_values = FALSE) +
+            theme(axis.text.x = element_text(angle = 0, size=8, vjust = 1),
+            axis.text.y = element_text(size=8),
+            legend.position="right")
+ggsave(file = paste0("ampvis2_species_heatmap.svg"), plot_heatmap_species, width = 25, dpi = 300, units = "cm", device='svg')
+
+
+POINT PLOTS
+
+
+species_point_plot <- amp_boxplot(
+  d,
+  group_by = "condition",
+  sort_by = "mean",
+  plot_type = "point",
+  point_size = 1,
+  tax_aggregate = "Species",
+  tax_add = "Genus",
+  tax_show = 40,
+  tax_empty = "remove",
+  tax_class = NULL,
+  order_group = NULL,
+  order_y = NULL,
+  plot_flip = FALSE,
+  plot_log = TRUE,
+  adjust_zero = NULL,
+  normalise = TRUE,
+  detailed_output = FALSE) +
+ 
+scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                   labels = trans_format("log10", math_format(10^.x))) +
+     xlab("") + scale_color_manual(values=c("red","lightblue","purple")) +
+  theme(axis.ticks.length = unit(0.7, "mm"),
+          axis.ticks = element_line(color = "black"),
+          text = element_text(size = 10, color = "black"),
+          axis.text = element_text(color = "black"), 
+          plot.margin = unit(c(0,0,0,0), "mm"),
+          legend.key.width = unit(3, "mm"),
+          legend.key.height = unit(3, "mm"),
+          legend.key = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.grid.major.x = element_line(color = "grey80"), 
+          panel.background = element_blank(),
+          axis.line = element_line(color = "black")
+          ) 
+  
+  ggsave(file = paste0("species_point_plot.svg"), species_point_plot, width = 25, dpi = 300, units = "cm", device='svg')
+
+            
+            
