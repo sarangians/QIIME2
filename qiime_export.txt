@@ -25,7 +25,7 @@ ggsave(file = paste0("alpha_diversity.svg"), plot_alpha_diversity, width = 18, d
 
 AMPVIS
 
-biom_otutable <- amp_import_biom("otu_table.biom")
+otutable <- amp_import_biom("otu_table.biom")
 metadata="metadata.tsv"
 d <- amp_load(otutable = otutable,metadata = metadata)
 
@@ -102,6 +102,43 @@ scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
           ) 
   
   ggsave(file = paste0("species_point_plot.svg"), species_point_plot, width = 25, dpi = 300, units = "cm", device='svg')
+  
+  
+  phylum_point_plot <- amp_boxplot(
+  d,
+  group_by = "sample",
+  sort_by = "mean",
+  plot_type = "point",
+  point_size = 1,
+  tax_aggregate = "Phylum",
+  tax_show = 40,
+  tax_empty = "remove",
+  tax_class = NULL,
+  order_group = NULL,
+  order_y = NULL,
+  plot_flip = FALSE,
+  adjust_zero = NULL,
+  detailed_output = FALSE) +
+ 
+scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                   labels = trans_format("log10", math_format(10^.x))) +
+     xlab("") + scale_color_manual(values=c("red","lightblue","purple","green","yellow","cyan")) +
+  theme(axis.ticks.length = unit(0.7, "mm"),
+          axis.ticks = element_line(color = "black"),
+          text = element_text(size = 10, color = "black"),
+          axis.text = element_text(color = "black"), 
+          plot.margin = unit(c(0,0,0,0), "mm"),
+          legend.key.width = unit(3, "mm"),
+          legend.key.height = unit(3, "mm"),
+          legend.key = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.grid.major.x = element_line(color = "grey80"), 
+          panel.background = element_blank(),
+          axis.line = element_line(color = "black")
+          ) 
+  
+  ggsave(file = paste0("phylum_point_plot.svg"), phylum_point_plot, width = 25, dpi = 300, units = "cm", device='svg')
+
 
             
             
