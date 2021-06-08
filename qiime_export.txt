@@ -12,6 +12,9 @@ qiime_2020.8.sif biom convert -i otu_table.biom -o otu_table.txt --to-tsv --head
 
 
 library(phyloseq)
+library(ampvis2)
+library(viridis)
+
 biomTable="otu_table.txt"
 mapFile="metadata.tsv"
 qiimedata = import_qiime(biomTable, mapFile)
@@ -122,7 +125,7 @@ scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
  
 scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
                    labels = trans_format("log10", math_format(10^.x))) +
-     xlab("") + scale_color_manual(values=c("red","lightblue","purple","green","yellow","cyan")) +
+     xlab("") + scale_color_manual(col = viridis(6)) +
   theme(axis.ticks.length = unit(0.7, "mm"),
           axis.ticks = element_line(color = "black"),
           text = element_text(size = 10, color = "black"),
