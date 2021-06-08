@@ -5,11 +5,21 @@ qiime_2020.8.sif qiime tools export --input-path table.qza --output-path taxonom
 2:30
 qiime_2020.8.sif qiime tools export --input-path taxonomy.qza --output-path taxonomy-export/
 2:31
+
+#grep -v -i "mitochondia|chloroplast|Feature" taxonomy-export/taxonomy.tsv | cut  -f 1 > no-chloro-mito-ids.txt
+
+#qiime_2020.8.sif biom subset-table --input-hdf5-fp feature-table.biom --axis observation --ids ../no-chloro-mito-ids.txt --output-fp feature-table-subset.biom
+
+
+
 qiime_2020.8.sif biom add-metadata -i feature-table.biom -o otu_table.biom --observation-metadata-fp taxonomy.tsv --observation-header OTUID,taxonomy --sc-separated taxonomy
 
 qiime_2020.8.sif biom convert -i otu_table.biom -o otu_table.txt --to-tsv --header-key taxonomy --to-tsv --output-metadata-id "Consensus Lineage"
 
+qiime_1.9.1.sif filter_otus_from_otu_table.py -i otu_table.txt --min_count_fraction 0.001 -o filtered_otu_table.biom
 
+qiime_2020.8.sif biom convert -i filtered_otu_table.biom -o filtered_otu_table_hd5.biom --table-type="OTU table" --to-hdf5
+/usr/bin/time -v qiime_2020.8.sif qiime tools import --input-path filtered_otu_table_hd5.biom --output-path filtered_otu_table.qza --type FeatureTable[Frequency]
 
 library(phyloseq)
 library(ampvis2)
