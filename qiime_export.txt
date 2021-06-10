@@ -16,6 +16,13 @@ qiime_2020.8.sif biom add-metadata -i feature-table.biom -o otu_table.biom --obs
 
 qiime_2020.8.sif biom convert -i otu_table.biom -o otu_table.txt --to-tsv --header-key taxonomy --to-tsv --output-metadata-id "Consensus Lineage"
 
+#for splitting biom based on condition
+qiime_2020.8.sif biom convert -i otu_table.biom -o otu_table.txt --to-tsv --header-key taxonomy --to-tsv --output-metadata-id "taxonomy"
+qiime_1.9.1.sif biom convert -i otu_table__condition_20__.biom --process-obs-metadata taxonomy --table-type "OTU table" --tsv-metadata-formatter naive --to-tsv --header-key "taxonomy" -o 20.txt
+
+
+
+
 qiime_1.9.1.sif filter_otus_from_otu_table.py -i otu_table.txt --min_count_fraction 0.001 -o filtered_otu_table.biom
 
 qiime_2020.8.sif biom convert -i filtered_otu_table.biom -o filtered_otu_table_hd5.biom --table-type="OTU table" --to-hdf5
