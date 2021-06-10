@@ -161,4 +161,25 @@ scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
 
 
             
-            
+  #Ven Diagram
+  
+  library(MicEco)
+  library(phyloseq)
+  
+biomTable="otu_table.txt"
+mapFile="phyloseq_map.txt"
+ps = import_qiime(biomTable, mapFile)
+  
+  png("VennDiagram.png")
+  ps_venn(
+  ps,
+  "group",
+  fraction = 0,
+  weight = FALSE,
+  type = "counts",
+  relative = TRUE,
+  plot = TRUE)
+  dev.off()
+  picrust_2.4.1.sif picrust2_pipeline.py -s dna-sequences.fasta -i filtered_otu_table_hd5.biom --stratified --wide_table -o picrust2_out_wide --verbose -p 150 2>&1 | tee picrust_analysis.log
+  #PICRUST2
+  
