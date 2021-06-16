@@ -1,0 +1,7 @@
+
+
+
+/usr/bin/time -v qiime_2020.8.sif qiime tools import --input-path combined_seqs.fna --output-path seqs.qza --type 'SampleData[Sequences]' 2>&1 | tee 01_import_combined_seqs.log
+
+
+/usr/bin/time -v qiime_2020.8.sif qiime vsearch dereplicate-sequences --i-sequences seqs.qza --o-dereplicated-table table.qza --o-dereplicated-sequences rep-seqs.qza 2>&1 | tee 02_vsearch_dereplicate_sequences.log
